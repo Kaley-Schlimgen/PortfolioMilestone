@@ -13,16 +13,22 @@ int counter = 0;
 std::mutex counter_mutex;
 
 void increment_counter() {
+    std::cout << "First thread that counts up to 20:" << std::endl;
+    
     std::lock_guard<std::mutex> lock(counter_mutex);
     for (int i = 0; i < 20; ++i) {
         counter++;
+        std::cout << counter << std::endl;
     }
 }
 
 void decrement_counter() {
+    std::cout << "Second thread that counts down to 0:" << std::endl;
+    
     std::lock_guard<std::mutex> lock(counter_mutex);
     for (int i = 20; i > 0; --i) {
         counter--;
+        std::cout << counter << std::endl;
     }
 }
 
@@ -33,7 +39,7 @@ int main() {
     firstThread.join();
     secondThread.join();
     
-    std::cout << counter << std::endl;
+    //std::cout << counter << std::endl;
     return 0;
 }
 
