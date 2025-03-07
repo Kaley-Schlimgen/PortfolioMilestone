@@ -6,9 +6,27 @@
 //
 
 #include <iostream>
+#include <thread>
+#include <mutex>
 
-int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+int counter = 0;
+std::mutex counter_mutex;
+
+void increment_counter() {
+    std::lock_guard<std::mutex> lock(counter_mutex);
+    for (int i = 0; i < 100; ++i) {
+        counter++;
+    }
+}
+
+int main() {
+    std::thread firstThread(increment_counter);
+    std::thread secondThread(increment_counter);
+
+    firstThread.join();
+    secondThread.join();
+    
+    std::cout << counter << std::endl;
     return 0;
 }
+
