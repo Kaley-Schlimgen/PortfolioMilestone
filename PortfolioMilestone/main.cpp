@@ -17,8 +17,9 @@ bool reached_20 = false;
 
 void increment_counter() {
     std::lock_guard<std::mutex> lock(counter_mutex);
-    for (int i = 0; i < 20; ++i) {
-        counter++;
+    std::cout << "First thread counting up to 20: " << std::endl;
+    for (int i = 1; i <= 20; ++i) {
+        counter = i;
         std::cout << counter << std::endl;
     }
     reached_20 = true;
@@ -26,9 +27,12 @@ void increment_counter() {
 }
 
 void decrement_counter() {
-    std::lock_guard<std::mutex> lock(counter_mutex);
+    std::unique_lock<std::mutex> lock(counter_mutex);
+    cv.wait(lock, [] { return reached_20; });
+    
+    std::cout << "\nSecond thread counting down to 1: " << std::endl;
     for (int i = 20; i > 0; --i) {
-        counter--;
+        counter = i;
         std::cout << counter << std::endl;
     }
 }
