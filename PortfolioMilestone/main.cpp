@@ -14,14 +14,21 @@ std::mutex counter_mutex;
 
 void increment_counter() {
     std::lock_guard<std::mutex> lock(counter_mutex);
-    for (int i = 0; i < 100; ++i) {
+    for (int i = 0; i < 20; ++i) {
         counter++;
+    }
+}
+
+void decrement_counter() {
+    std::lock_guard<std::mutex> lock(counter_mutex);
+    for (int i = 20; i > 0; --i) {
+        counter--;
     }
 }
 
 int main() {
     std::thread firstThread(increment_counter);
-    std::thread secondThread(increment_counter);
+    std::thread secondThread(decrement_counter);
 
     firstThread.join();
     secondThread.join();
