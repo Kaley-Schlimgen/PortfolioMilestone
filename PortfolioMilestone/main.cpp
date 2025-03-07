@@ -8,23 +8,24 @@
 #include <iostream>
 #include <thread>
 #include <mutex>
+#include <condition_variable>
 
 int counter = 0;
 std::mutex counter_mutex;
+std::condition_variable cv;
+bool reached_20 = false;
 
 void increment_counter() {
-    std::cout << "First thread that counts up to 20:" << std::endl;
-    
     std::lock_guard<std::mutex> lock(counter_mutex);
     for (int i = 0; i < 20; ++i) {
         counter++;
         std::cout << counter << std::endl;
     }
+    reached_20 = true;
+    cv.notify_one();
 }
 
 void decrement_counter() {
-    std::cout << "Second thread that counts down to 0:" << std::endl;
-    
     std::lock_guard<std::mutex> lock(counter_mutex);
     for (int i = 20; i > 0; --i) {
         counter--;
@@ -39,7 +40,6 @@ int main() {
     firstThread.join();
     secondThread.join();
     
-    //std::cout << counter << std::endl;
     return 0;
 }
 
