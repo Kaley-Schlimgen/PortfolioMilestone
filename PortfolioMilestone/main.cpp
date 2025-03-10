@@ -64,12 +64,12 @@ void decrement_counter() {
 int main() {
     try {
         //starts both threads
-        std::thread firstThread(increment_counter);
-        std::thread secondThread(decrement_counter);
+        std::thread incrementThread(increment_counter);
+        std::thread decrementThread(decrement_counter);
         
         //main thread waits for the first and second threads to complete before exiting
-        firstThread.join();
-        secondThread.join();
+        incrementThread.join();
+        decrementThread.join();
     } catch (const std::exception& e) {
         std::cerr << "Error in Main Class: " << e.what() << std::endl;
         return 1;
